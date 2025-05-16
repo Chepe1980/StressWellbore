@@ -307,6 +307,8 @@ if las:
         st.write(f"Minimum Horizontal Stress (σh) at {current_depth:.0f} ft: {sigma_h[0,0,mid_depth_idx]:.0f} psi")
         st.write(f"Pore Pressure (Pp) at {current_depth:.0f} ft: {Pp[0,0,mid_depth_idx]:.0f} psi")
         
+        # ... (previous code remains the same until the last section)
+
         # Interpretation guide
         st.markdown("""
         ### Interpretation Guide:
@@ -318,11 +320,10 @@ if las:
         - **Normalized Radius**: r/r_w where r_w is wellbore radius
         """)
 
-# Installation instructions
+# Installation instructions (fixed triple quotes)
 st.sidebar.markdown("""
 ### Installation Requirements:
 ```bash
 pip install streamlit numpy matplotlib scipy lasio
 
-           
-       
+""")
