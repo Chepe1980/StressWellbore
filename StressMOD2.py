@@ -8,7 +8,7 @@ import streamlit as st
 import lasio  # For reading LAS files
 
 # Constants for unit conversion
-MPa_to_psi = 145.038  # Conversion factor from MPa to psi
+#psi_to_MPa = 145.038  # Conversion factor from MPa to psi
 
 # Page configuration
 st.set_page_config(layout="wide")
@@ -55,8 +55,8 @@ with st.sidebar:
     else:
         default_depth_range = [1000, 2000]
     
-    min_depth = st.number_input("Minimum Depth (ft)", *default_depth_range)
-    max_depth = st.number_input("Maximum Depth (ft)", *default_depth_range)
+    min_depth = st.number_input("Minimum Depth (m)", *default_depth_range)
+    max_depth = st.number_input("Maximum Depth (m)", *default_depth_range)
     
     # Stress field selection
     if las:
@@ -99,9 +99,9 @@ def calculate_stresses():
     if las:
         try:
             depth_data = las['DEPT'] if 'DEPT' in las.curves else las['DEPTH']
-            sigma_H_data = las[sigma_H_curve] * MPa_to_psi  # Convert to psi
-            sigma_h_data = las[sigma_h_curve] * MPa_to_psi
-            Pp_data = las[Pp_curve] * MPa_to_psi
+            sigma_H_data = las[sigma_H_curve] * 1  # Convert to psi
+            sigma_h_data = las[sigma_h_curve] * 1
+            Pp_data = las[Pp_curve] * 1
             
             # Interpolate to our depth points
             sigma_H = np.interp(depth_range, depth_data, sigma_H_data)
@@ -323,3 +323,6 @@ st.sidebar.markdown("""
 ### Installation Requirements:
 ```bash
 pip install streamlit numpy matplotlib scipy lasio
+
+           
+       
