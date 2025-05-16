@@ -5,10 +5,11 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.sparse import diags, csr_matrix
 from scipy.sparse.linalg import spsolve
 import streamlit as st
-import lasio  # For reading LAS files
+import lasio
+import io  # For handling file bytes
 
 # Constants for unit conversion
-#psi_to_MPa = 145.038  # Conversion factor from MPa to psi
+# MPa_to_psi = 145.038  # Conversion factor from MPa to psi
 
 # Page configuration
 st.set_page_config(layout="wide")
@@ -22,12 +23,14 @@ All results are displayed in psi (pressure units).
 with st.sidebar:
     st.header("Input Parameters")
     
-    # LAS file upload
+    # LAS file upload with proper byte handling
     las_file = st.file_uploader("Upload LAS File", type=['las'])
     
     if las_file:
         try:
-            las = lasio.read(las_file)
+            # Convert the file-like object to bytes then to StringIO
+            las_text = las_file.getvalue().decode('utf-8')
+            las = lasio.read(io.StringIO(las_text))
             st.success("LAS file successfully loaded!")
             
             # Display available curves
@@ -40,11 +43,10 @@ with st.sidebar:
     else:
         las = None
         st.warning("Please upload a LAS file to proceed")
+
+    # Rest of your sidebar inputs...
+    wellbore_radius = st.number_input("Wellbore Radius (ft)", 0.1, 2.0, 0.328, 0.01)
     
-    # Wellbore geometry
-    wellbore_radius = st.number_input("Wellbore Radius (ft)", 0.1, 2.0, 0.328, 0.01)  # Default 0.1m ≈ 0.328ft
-    
-    # Geomechanical parameters (with psi units)
     if las:
         try:
             depth_data = las['DEPT'] if 'DEPT' in las.curves else las['DEPTH']
@@ -55,8 +57,8 @@ with st.sidebar:
     else:
         default_depth_range = [1000, 2000]
     
-    min_depth = st.number_input("Minimum Depth (m)", *default_depth_range)
-    max_depth = st.number_input("Maximum Depth (m)", *default_depth_range)
+    min_depth = st.number_input("Minimum Depth (ft)", *default_depth_range)
+    max_depth = st.number_input("Maximum Depth (ft)", *default_depth_range)
     
     # Stress field selection
     if las:
@@ -68,6 +70,8 @@ with st.sidebar:
     # Visualization settings
     threshold_percent = st.slider("Stress Concentration Threshold (%)", 30, 90, 50, 5)
     resolution = st.selectbox("Model Resolution", ["Low", "Medium", "High"], index=1)
+
+# ... (rest of your code remains the same)
 
 # Kirsch equations (modified for psi units)
 def kirsch_hoop_stress(r, theta, sigma_H, sigma_h, wellbore_radius, Pp):
