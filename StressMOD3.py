@@ -108,7 +108,7 @@ def calculate_stresses():
             depth_data = las['DEPT'] if 'DEPT' in las.curves else las['DEPTH']
             sigma_H_data = las[sigma_H_curve] * 1  # Convert to psi
             sigma_h_data = las[sigma_h_curve] * 1
-            Pp_data = las[Pp_curve] * MPa_to_psi
+            Pp_data = las[Pp_curve] * 1
             
             # Interpolate to our depth points
             sigma_H = np.interp(depth_range, depth_data, sigma_H_data)
@@ -203,7 +203,7 @@ def plot_stress_vs_depth(depth, sigma_H, sigma_h, Pp, min_depth, max_depth):
     
     # Formatting
     ax.set_xlabel('Stress (psi)')
-    ax.set_ylabel('Depth (m)')
+    ax.set_ylabel('Depth (ft)')
     ax.set_title('Stress Field vs Depth')
     ax.grid(True)
     ax.legend()
@@ -236,9 +236,9 @@ if las:
             rstride=1, cstride=1, alpha=0.8
         )
         ax1.set_title('3D Wellbore Hoop Stress (psi)')
-        ax1.set_xlabel('X (ft)')
-        ax1.set_ylabel('Y (ft)')
-        ax1.set_zlabel('Depth (ft)')
+        ax1.set_xlabel('X (m)')
+        ax1.set_ylabel('Y (m)')
+        ax1.set_zlabel('Depth (m)')
         
         ## 2. 3D Stress Concentration
         ax2 = fig.add_subplot(232, projection='3d')
@@ -340,9 +340,9 @@ if las:
         st.subheader("Stress Data at Selected Depth")
         st.write(f"Maximum Horizontal Stress (σH) at {current_depth:.0f} m: {sigma_H[0,0,mid_depth_idx]:.0f} psi")
         st.write(f"Minimum Horizontal Stress (σh) at {current_depth:.0f} m: {sigma_h[0,0,mid_depth_idx]:.0f} psi")
-        st.write(f"Pore Pressure (Pp) at {current_depth:.0f} ft: {Pp[0,0,mid_depth_idx]:.0f} psi")
+        st.write(f"Pore Pressure (Pp) at {current_depth:.0f} m: {Pp[0,0,mid_depth_idx]:.0f} psi")
 
-# Installation instructions
+# Installation instructions (fixed triple quotes)
 st.sidebar.markdown("""
 ### Installation Requirements:
 ```bash
